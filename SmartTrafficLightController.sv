@@ -1,5 +1,10 @@
 module SmartTrafficLightController #(
-        localparam CLK_FREQ = 1 // Hz
+	localparam CLK_FREQ = 1, // Hz
+	localparam MAIN_GREEN_TIME = 10, // s
+	localparam YELLOW_TIME = 3, // s
+	localparam SIDE_GREEN_TIME = 7, // s
+	localparam ALL_RED_TIME = 2, // s
+	localparam PED_TIME = 6 // s
 ) (
 	// Inputs
 	input logic clk,
