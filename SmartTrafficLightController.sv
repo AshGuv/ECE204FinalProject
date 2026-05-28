@@ -1,12 +1,25 @@
 module SmartTrafficLightController #(
         localparam CLK_FREQ = 1 // Hz
 ) (
-        input logic clk,
+	// Inputs
+    	input logic clk,
         input logic reset,
         input logic side_sensor,
         input logic ped_button,
         input logic emergency_main,
-        input logic emergency_side
+        input logic emergency_side,
+
+	// Outputs (busses not specified yet)
+	output logic main_red,
+	output logic main_yellow,
+	output logic main_green,
+	output logic side_red,
+	output logic side_yellow,
+	output logic side_green,
+	output logic ped_walk,
+	output logic ped_wait,
+	output logic countdown,
+	output logic seg7
 );
 	// Define custom type "State"
 	typedef enum logic [2:0] {
