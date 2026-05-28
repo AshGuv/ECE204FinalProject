@@ -2,12 +2,12 @@ module SmartTrafficLightController #(
         localparam CLK_FREQ = 1 // Hz
 ) (
 	// Inputs
-    	input logic clk,
-        input logic reset,
-        input logic side_sensor,
-        input logic ped_button,
-        input logic emergency_main,
-        input logic emergency_side,
+	input logic clk,
+	input logic reset,
+	input logic side_sensor,
+	input logic ped_button,
+	input logic emergency_main,
+	input logic emergency_side,
 
 	// Outputs (busses not specified yet)
 	output logic main_red,
