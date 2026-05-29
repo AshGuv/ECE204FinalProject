@@ -1,3 +1,11 @@
+/*  PROJECT NAME: Smart Traffic Light Controller
+ 	AUTHORS: Leslie Koopmann, Travis Koyama, Ashton Guvenir
+ 	DESCRIPTION: A smart traffic light controller system for a two-road 
+		intersection (main + side road). Features include main road 
+		prioritization, pedestrian crossing, and emergency vehicle response.
+	SOURCES: Project description off of Canvas
+*/
+
 module SmartTrafficLightController #(
 	localparam CLK_FREQ = 1, // Hz
 	localparam MAIN_GREEN_TIME = 10, // s
@@ -33,6 +41,7 @@ module SmartTrafficLightController #(
 	State cur_state, next_state;
 	
 	// Base FSM logic
+	// Asynchronous resets/triggers: reset, emergency_main + side
 	always_ff @(posedge clk or posedge reset) begin
 		if (reset) begin
 			cur_state <= S0;
