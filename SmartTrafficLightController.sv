@@ -15,14 +15,14 @@ module SmartTrafficLightController #(
 	localparam PED_TIME = 6 // s
 ) (
 	// Inputs
-	input logic clk,
-	input logic reset,
-	input logic side_sensor,
-	input logic ped_button,
-	input logic emergency_main,
-	input logic emergency_side,
+	input logic clk, // 1Hz FPGA clock, active HIGH
+	input logic reset, // Asynchronous, top button on FPGA, active LOW
+	input logic side_sensor, // Switch on FPGA, active HIGH
+	input logic ped_button, // Bottom button on FPGA, active LOW
+	input logic emergency_main, // Asynchronous, switch on FPGA, active HIGH
+	input logic emergency_side, // Asynchronous, switch on FPGA, active HIGH
 
-	// Outputs (busses not specified yet)
+	// Outputs (busses not specified yet, no FPGA imp.)
 	output logic main_red,
 	output logic main_yellow,
 	output logic main_green,
@@ -36,15 +36,30 @@ module SmartTrafficLightController #(
 );
 	// Define custom type "State"
 	typedef enum logic [2:0] {
-		S0, S1, S2, S3, S4, S5, S6, S7
+		// Main cycle
+		S0, // m: green, s: red
+		S1, // m: yellow, s: red
+		S2, // m: red, s: red
+		S3, // m: red, s: green
+		S4, // m: red, s: yellow
+		S5, // m: red, s: red
+		// Ped signals
+		S6, // m: red, s: red
+		S7  // m: red, s: red
 	} State;
 	State cur_state, next_state;
 	
 	// Base FSM logic
 	// Asynchronous resets/triggers: reset, emergency_main + side
-	always_ff @(posedge clk or posedge reset) begin
+	always_ff @(posedge clk or posedge reset or edge emergency_main or
+		edge emergency_side
+	) begin
 		if (reset) begin
 			cur_state <= S0;
+		end else if (emergency_main) begin // Takes prio over e_side
+			cur_state <= S0;
+		end else if (emergency_side) begin
+			cur_state <= S3;
 		end else begin
 			cur_state <= next_state;
 		end
