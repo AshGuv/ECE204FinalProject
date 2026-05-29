@@ -49,7 +49,7 @@ module SmartTrafficLightController #(
 	} State;
 	State cur_state, next_state;
 	
-	// Base FSM logic
+	// FSM logic
 	// Asynchronous resets/triggers: reset, emergency_main + side
 	always_ff @(posedge clk or posedge reset or edge emergency_main or
 		edge emergency_side
