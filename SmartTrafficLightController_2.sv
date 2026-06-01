@@ -108,9 +108,14 @@ module SmartTrafficLightController (
     // Base FSM state register
     // ========================================================
 
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk or posedge reset or posedge emergency_main or 
+            posedge emergency_side) begin
         if (reset) begin
             cur_state <= S0_MAIN_GREEN_IDLE;
+        end else if (emergency_main) begin
+            cur_state <= S9_EMERGENCY_MAIN;
+        end else if (emergency_side) begin
+            cur_state <= S10_EMERGENCY_SIDE;
         end else begin
             cur_state <= next_state;
         end
@@ -219,11 +224,7 @@ module SmartTrafficLightController (
             // Main road stays green forever when there are no requests.
             // When a request is detected, start the timed main green state.
             S0_MAIN_GREEN_IDLE: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-                else if (side_sensor || side_pending || ped_pending || ped_button)
+                if (side_sensor || side_pending || ped_pending || ped_button)
                     next_state = S1_MAIN_GREEN_TIMED;
                 else
                     next_state = S0_MAIN_GREEN_IDLE;
@@ -231,11 +232,7 @@ module SmartTrafficLightController (
 
             // Main road stays green for the full 10 seconds after a request.
             S1_MAIN_GREEN_TIMED: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-                else if (countdown == 4'd0)
+                if (countdown == 4'd0)
                     next_state = S2_MAIN_YELLOW;
                 else
                     next_state = S1_MAIN_GREEN_TIMED;
@@ -243,11 +240,7 @@ module SmartTrafficLightController (
 
             // Main road yellow before stopping.
             S2_MAIN_YELLOW: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-                else if (countdown == 4'd0)
+                if (countdown == 4'd0)
                     next_state = S3_ALL_RED_AFTER_MAIN;
                 else
                     next_state = S2_MAIN_YELLOW;
@@ -255,14 +248,9 @@ module SmartTrafficLightController (
 
             // Both roads red after main road yellow.
             S3_ALL_RED_AFTER_MAIN: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-
                 // If pedestrian AND side-road request are both waiting:
                 // pedestrian walks first, then side road gets green.
-                else if (countdown == 4'd0 &&
+                if (countdown == 4'd0 &&
                          (ped_pending || ped_button) &&
                          (side_pending || side_sensor))
                     next_state = S7_PED_THEN_SIDE;
@@ -288,11 +276,7 @@ module SmartTrafficLightController (
 
             // Side road green.
             S4_SIDE_GREEN: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-                else if (countdown == 4'd0)
+                if (countdown == 4'd0)
                     next_state = S5_SIDE_YELLOW;
                 else
                     next_state = S4_SIDE_GREEN;
@@ -300,11 +284,7 @@ module SmartTrafficLightController (
 
             // Side road yellow before stopping.
             S5_SIDE_YELLOW: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-                else if (countdown == 4'd0)
+                if (countdown == 4'd0)
                     next_state = S6_ALL_RED_AFTER_SIDE;
                 else
                     next_state = S5_SIDE_YELLOW;
@@ -312,11 +292,7 @@ module SmartTrafficLightController (
 
             // Both roads red after side road yellow.
             S6_ALL_RED_AFTER_SIDE: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-                else if (countdown == 4'd0 && (ped_pending || ped_button))
+                if (countdown == 4'd0 && (ped_pending || ped_button))
                     next_state = S8_PED_THEN_MAIN;
                 else if (countdown == 4'd0)
                     next_state = S0_MAIN_GREEN_IDLE;
@@ -326,11 +302,7 @@ module SmartTrafficLightController (
 
             // Pedestrian walk, then side road green.
             S7_PED_THEN_SIDE: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-                else if (countdown == 4'd0)
+                if (countdown == 4'd0)
                     next_state = S4_SIDE_GREEN;
                 else
                     next_state = S7_PED_THEN_SIDE;
@@ -338,11 +310,7 @@ module SmartTrafficLightController (
 
             // Pedestrian walk, then main road green.
             S8_PED_THEN_MAIN: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-                else if (countdown == 4'd0)
+                if (countdown == 4'd0)
                     next_state = S0_MAIN_GREEN_IDLE;
                 else
                     next_state = S8_PED_THEN_MAIN;
@@ -350,22 +318,12 @@ module SmartTrafficLightController (
 
             // Emergency main.
             S9_EMERGENCY_MAIN: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-                else
-                    next_state = S0_MAIN_GREEN_IDLE;
+                next_state = S0_MAIN_GREEN_IDLE;
             end
 
             // Emergency side.
             S10_EMERGENCY_SIDE: begin
-                if (emergency_main)
-                    next_state = S9_EMERGENCY_MAIN;
-                else if (emergency_side)
-                    next_state = S10_EMERGENCY_SIDE;
-                else
-                    next_state = S0_MAIN_GREEN_IDLE;
+                next_state = S0_MAIN_GREEN_IDLE;
             end
 
             default: begin
