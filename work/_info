@@ -1,0 +1,111 @@
+m255
+K4
+z2
+!s11f vlog 2021.1 2021.02, Feb  3 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/intelFPGA_pro/21.1
+vSevenSegmentDecoder
+Z0 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
+Z1 !s110 1780352496
+!i10b 1
+!s100 0J[]2^L]_hjdTNh4>j[9V1
+I^SjIlZADfbIWiL?O<Uze42
+S1
+Z2 dC:/ECE204/ECE204FinalProject
+Z3 w1780352294
+Z4 8C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv
+Z5 FC:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv
+!i122 1
+L0 485 22
+Z6 VDg1SIo80bB@j0V0VzS_@n1
+Z7 OV;L;2021.1;73
+r1
+!s85 0
+31
+Z8 !s108 1780352496.000000
+Z9 !s107 C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv|
+Z10 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv|
+!i113 1
+Z11 o-work work -sv
+Z12 tCvgOpt 0
+n@seven@segment@decoder
+vSmartTrafficLightController
+R0
+R1
+!i10b 1
+!s100 XmanM5`hFf@hI5:4nFa6J3
+I4IngeLRfo@:laSL<Z4cel0
+S1
+R2
+R3
+R4
+R5
+!i122 1
+L0 30 449
+R6
+R7
+r1
+!s85 0
+31
+R8
+R9
+R10
+!i113 1
+R11
+R12
+n@smart@traffic@light@controller
+vSmartTrafficLightController_tb
+R0
+R1
+!i10b 1
+!s100 S:JmM]6:4UVi2RU79[<PO3
+I3jX1;Zn@A6k>I:dV]Z[?i3
+S1
+R2
+w1780351275
+8C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv
+FC:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv
+!i122 2
+L0 22 430
+R6
+R7
+r1
+!s85 0
+31
+R8
+!s107 C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv|
+!i113 1
+R11
+R12
+n@smart@traffic@light@controller_tb
+vTrafficController
+R0
+R1
+!i10b 1
+!s100 7M63[[^dcXW2hIRX@79H53
+IRb^8@mTEXzDI[jEll2n>`0
+S1
+R2
+w1780028021
+8C:/ECE204/ECE204FinalProject/ExampleFSM.sv
+FC:/ECE204/ECE204FinalProject/ExampleFSM.sv
+!i122 0
+L0 1 90
+R6
+R7
+r1
+!s85 0
+31
+R8
+!s107 C:/ECE204/ECE204FinalProject/ExampleFSM.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/ECE204/ECE204FinalProject/ExampleFSM.sv|
+!i113 1
+R11
+R12
+n@traffic@controller

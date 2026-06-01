@@ -1,0 +1,81 @@
+vsim -gui work.SmartTrafficLightController_tb
+# vsim -gui work.SmartTrafficLightController_tb 
+# Start time: 15:27:28 on Jun 01,2026
+# Loading sv_std.std
+# Loading work.SmartTrafficLightController_tb
+# Loading work.SmartTrafficLightController
+# Loading work.SevenSegmentDecoder
+add wave *
+add sim:/SmartTrafficController_tb/dut/cur_state
+# ** Error: bad option "sim:/SmartTrafficController_tb/dut/cur_state": should be one of...
+#   add atv ?options? ?arg arg ...?
+#   add button text action ?disable? ?options? ?help?
+#   add dataflow ?options? ?arg arg ...?
+#   add lists ?options? ?arg arg ...?
+#   add log ?options? ?arg arg ...?
+#   add memory options ?arg arg ...?
+#   add message ?options? ?arg arg ...?
+#   add monitor ?options? ?arg arg ...?
+#   add schematic ?options? ?arg arg ...?
+#   add testbrowser ?options? ?arg arg ...?
+#   add virtual ?options? ?arg arg ...?
+#   add watch ?options? ?arg arg ...?
+#   add wave ?options? ?arg arg ...?
+add wave sim:/SmartTrafficLightController_tb/dut/cur_state
+add wave sim:/SmartTrafficLightController_tb/dut/next_state
+run -all
+# 
+# ========== TEST 1: RESET AND IDLE ==========
+# 26000 | S0 Main Green Idle after reset | countdown=10 | M: R=0 Y=0 G=1 | S: R=1 Y=0 G=0 | PED: walk=0 wait=1
+# PASSED: S0 Main Green Idle after reset
+# PASSED: Countdown is 10 after reset.
+# 76000 | S0 Main Green Idle with no inputs | countdown=10 | M: R=0 Y=0 G=1 | S: R=1 Y=0 G=0 | PED: walk=0 wait=1
+# PASSED: S0 Main Green Idle with no inputs
+# PASSED: Countdown stays 10 while idle.
+# 
+# ========== TEST 2: SIDE REQUEST ONLY ==========
+# 86000 | S1 Main Green Timed starts after side request | countdown=10 | M: R=0 Y=0 G=1 | S: R=1 Y=0 G=0 | PED: walk=0 wait=1
+# PASSED: S1 Main Green Timed starts after side request
+# 266000 | S4 Side Green after side request | countdown=7 | M: R=1 Y=0 G=0 | S: R=0 Y=0 G=1 | PED: walk=0 wait=1
+# PASSED: S4 Side Green after side request
+# 416000 | Return to S0 Main Green after side cycle | countdown=10 | M: R=0 Y=0 G=1 | S: R=1 Y=0 G=0 | PED: walk=0 wait=1
+# PASSED: Return to S0 Main Green after side cycle
+# 
+# ========== TEST 3: PEDESTRIAN ONLY ==========
+# 456000 | S1 Main Green Timed starts after ped request | countdown=10 | M: R=0 Y=0 G=1 | S: R=1 Y=0 G=0 | PED: walk=0 wait=1
+# PASSED: S1 Main Green Timed starts after ped request
+# 636000 | S8 Pedestrian Walk Then Main | countdown=6 | M: R=1 Y=0 G=0 | S: R=1 Y=0 G=0 | PED: walk=1 wait=0
+# PASSED: S8 Pedestrian Walk Then Main
+# 716000 | Pedestrian only returns to Main Green | countdown=10 | M: R=0 Y=0 G=1 | S: R=1 Y=0 G=0 | PED: walk=0 wait=1
+# PASSED: Pedestrian only returns to Main Green
+# 
+# ========== TEST 4: PEDESTRIAN PLUS SIDE REQUEST ==========
+# 756000 | S1 Main Green Timed starts after ped + side request | countdown=10 | M: R=0 Y=0 G=1 | S: R=1 Y=0 G=0 | PED: walk=0 wait=1
+# PASSED: S1 Main Green Timed starts after ped + side request
+# 936000 | S7 Pedestrian Walk Then Side | countdown=6 | M: R=1 Y=0 G=0 | S: R=1 Y=0 G=0 | PED: walk=1 wait=0
+# PASSED: S7 Pedestrian Walk Then Side
+# 1016000 | Side Green after pedestrian because side request existed | countdown=6 | M: R=1 Y=0 G=0 | S: R=0 Y=0 G=1 | PED: walk=0 wait=1
+# PASSED: Side Green after pedestrian because side request existed
+# 
+# ========== TEST 5: PEDESTRIAN DURING SIDE CYCLE ==========
+# 1176000 | S8 Pedestrian Walk Then Main after side cycle | countdown=4 | M: R=1 Y=0 G=0 | S: R=1 Y=0 G=0 | PED: walk=1 wait=0
+# PASSED: S8 Pedestrian Walk Then Main after side cycle
+# 1256000 | Return to Main Green after pedestrian after side | countdown=10 | M: R=0 Y=0 G=1 | S: R=1 Y=0 G=0 | PED: walk=0 wait=1
+# PASSED: Return to Main Green after pedestrian after side
+# 
+# ========== TEST 6: EMERGENCY MAIN ==========
+# 1287000 | Emergency Main forces Main Green | countdown=10 | M: R=0 Y=0 G=1 | S: R=1 Y=0 G=0 | PED: walk=0 wait=1
+# PASSED: Emergency Main forces Main Green
+# 
+# ========== TEST 7: EMERGENCY SIDE ==========
+# 1327000 | Emergency Side forces Side Green and Main Red | countdown=10 | M: R=1 Y=0 G=0 | S: R=0 Y=0 G=1 | PED: walk=0 wait=1
+# PASSED: Emergency Side forces Side Green and Main Red
+# 
+# ========== TEST 8: BOTH EMERGENCIES ==========
+# 1367000 | Both emergencies active, Main wins | countdown=10 | M: R=0 Y=0 G=1 | S: R=1 Y=0 G=0 | PED: walk=0 wait=1
+# PASSED: Both emergencies active, Main wins
+# 
+# All updated tests finished.
+# ** Note: $stop    : C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv(448)
+#    Time: 1376 ns  Iteration: 0  Instance: /SmartTrafficLightController_tb
+# Break in Module SmartTrafficLightController_tb at C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv line 448
