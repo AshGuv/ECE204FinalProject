@@ -19,9 +19,9 @@
         Emergency vehicle inputs override the normal sequence.
 
     ASSUMPTIONS:
-        - reset is active HIGH.
+        - reset_n is active LOW.
         - side_sensor is active HIGH.
-        - ped_button is active HIGH.
+        - ped_button_n is active LOW.
         - emergency_main is active HIGH.
         - emergency_side is active HIGH.
         - 1 clock cycle = 1 second.
@@ -29,10 +29,10 @@
 
 module SmartTrafficLightController (
     input logic clk, // 50MHz
-    input logic reset,
+    input logic reset_n,
 
     input logic side_sensor,
-    input logic ped_button,
+    input logic ped_button_n,
     input logic emergency_main,
     input logic emergency_side,
 
@@ -66,7 +66,7 @@ module SmartTrafficLightController (
 
     // Clock frequency conversion
     logic clk_local;
-    CyclicCounter cc0(CLK_FREQ, reset, clk_local);
+    CyclicCounter cc0(CLK_FREQ, reset_n, clk_local);
 
     // ========================================================
     // State definitions
@@ -114,9 +114,9 @@ module SmartTrafficLightController (
     // Base FSM state register
     // ========================================================
 
-    always_ff @(posedge clk or posedge reset or posedge emergency_main or 
+    always_ff @(posedge clk or negedge reset_n or posedge emergency_main or 
             posedge emergency_side) begin
-        if (reset) begin
+        if (!reset_n) begin
             cur_state <= S0_MAIN_GREEN_IDLE;
         end else if (emergency_main) begin
             cur_state <= S9_EMERGENCY_MAIN;
@@ -131,8 +131,8 @@ module SmartTrafficLightController (
     // Countdown timer logic
     // ========================================================
 
-    always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always_ff @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
             countdown <= MAIN_GREEN_TIME;
         end else if (next_state != cur_state) begin
             countdown <= next_countdown;
@@ -147,13 +147,13 @@ module SmartTrafficLightController (
     // Pedestrian pending logic
     // ========================================================
 
-    always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always_ff @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
             ped_pending <= 1'b0;
         end else begin
 
             // Store the pedestrian request whenever the button is pressed.
-            if (ped_button) begin
+            if (!ped_button_n) begin
                 ped_pending <= 1'b1;
             end
 
@@ -169,8 +169,8 @@ module SmartTrafficLightController (
     // Side-road pending logic
     // ========================================================
 
-    always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always_ff @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
             side_pending <= 1'b0;
         end else begin
 
@@ -230,7 +230,7 @@ module SmartTrafficLightController (
             // Main road stays green forever when there are no requests.
             // When a request is detected, start the timed main green state.
             S0_MAIN_GREEN_IDLE: begin
-                if (side_sensor || side_pending || ped_pending || ped_button)
+                if (side_sensor || side_pending || ped_pending || !ped_button_n)
                     next_state = S1_MAIN_GREEN_TIMED;
                 else
                     next_state = S0_MAIN_GREEN_IDLE;
@@ -257,14 +257,14 @@ module SmartTrafficLightController (
                 // If pedestrian AND side-road request are both waiting:
                 // pedestrian walks first, then side road gets green.
                 if (countdown == 4'd0 &&
-                         (ped_pending || ped_button) &&
+                         (ped_pending || !ped_button_n) &&
                          (side_pending || side_sensor))
                     next_state = S7_PED_THEN_SIDE;
 
                 // If pedestrian request is waiting but no side car is waiting:
                 // pedestrian walks, then return to main green.
                 else if (countdown == 4'd0 &&
-                         (ped_pending || ped_button))
+                         (ped_pending || !ped_button_n))
                     next_state = S8_PED_THEN_MAIN;
 
                 // If only the side road is waiting:
@@ -298,7 +298,7 @@ module SmartTrafficLightController (
 
             // Both roads red after side road yellow.
             S6_ALL_RED_AFTER_SIDE: begin
-                if (countdown == 4'd0 && (ped_pending || ped_button))
+                if (countdown == 4'd0 && (ped_pending || !ped_button_n))
                     next_state = S8_PED_THEN_MAIN;
                 else if (countdown == 4'd0)
                     next_state = S0_MAIN_GREEN_IDLE;

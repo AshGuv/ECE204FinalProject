@@ -22,10 +22,10 @@
 module SmartTrafficLightController_tb;
 
     logic clk;
-    logic reset;
+    logic reset_n;
 
     logic side_sensor;
-    logic ped_button;
+    logic ped_button_n;
     logic emergency_main;
     logic emergency_side;
 
@@ -50,10 +50,10 @@ module SmartTrafficLightController_tb;
 
     SmartTrafficLightController dut (
         .clk(clk),
-        .reset(reset),
+        .reset_n(reset_n),
 
         .side_sensor(side_sensor),
-        .ped_button(ped_button),
+        .ped_button_n(ped_button_n),
         .emergency_main(emergency_main),
         .emergency_side(emergency_side),
 
@@ -115,16 +115,16 @@ module SmartTrafficLightController_tb;
 
     task do_reset();
         begin
-            reset = 1'b1;
+            reset_n = 1'b0;
 
             side_sensor = 1'b0;
-            ped_button = 1'b0;
+            ped_button_n = 1'b1;
             emergency_main = 1'b0;
             emergency_side = 1'b0;
 
             wait_cycles(2);
 
-            reset = 1'b0;
+            reset_n = 1'b1;
             wait_clock();
         end
     endtask
@@ -176,9 +176,9 @@ module SmartTrafficLightController_tb;
 
     initial begin
 
-        reset = 1'b0;
+        reset_n = 1'b1;
         side_sensor = 1'b0;
-        ped_button = 1'b0;
+        ped_button_n = 1'b1;
         emergency_main = 1'b0;
         emergency_side = 1'b0;
 
@@ -265,9 +265,9 @@ module SmartTrafficLightController_tb;
 
         do_reset();
 
-        ped_button = 1'b1;
+        ped_button_n = 1'b0;
         wait_clock();
-        ped_button = 1'b0;
+        ped_button_n = 1'b1;
 
         check_outputs(
             "S1 Main Green Timed starts after ped request",
@@ -307,11 +307,11 @@ module SmartTrafficLightController_tb;
 
         do_reset();
 
-        ped_button = 1'b1;
+        ped_button_n = 1'b0;
         side_sensor = 1'b1;
         wait_clock();
 
-        ped_button = 1'b0;
+        ped_button_n = 1'b1;
         side_sensor = 1'b0;
 
         check_outputs(
@@ -349,9 +349,9 @@ module SmartTrafficLightController_tb;
         $display("\n========== TEST 5: PEDESTRIAN DURING SIDE CYCLE ==========");
 
         // Currently in side green from Test 4.
-        ped_button = 1'b1;
+        ped_button_n = 1'b0;
         wait_clock();
-        ped_button = 1'b0;
+        ped_button_n = 1'b1;
 
         // Finish side green + side yellow + all red after side
         wait_cycles(15);
