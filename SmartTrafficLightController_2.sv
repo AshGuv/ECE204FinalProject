@@ -28,7 +28,7 @@
 */
 
 module SmartTrafficLightController (
-    input logic clk,
+    input logic clk, // 50MHz
     input logic reset,
 
     input logic side_sensor,
@@ -55,12 +55,18 @@ module SmartTrafficLightController (
     // ========================================================
     // Timing values
     // ========================================================
+    
+    localparam CLK_FREQ = 50*10**6
 
     localparam logic [3:0] MAIN_GREEN_TIME = 4'd10;
     localparam logic [3:0] YELLOW_TIME     = 4'd3;
     localparam logic [3:0] SIDE_GREEN_TIME = 4'd7;
     localparam logic [3:0] ALL_RED_TIME    = 4'd2;
     localparam logic [3:0] PED_TIME        = 4'd6;
+
+    // Clock frequency conversion
+    logic clk_local;
+    CyclicCounter cc0(CLK_FREQ, reset, clk_local);
 
     // ========================================================
     // State definitions
@@ -503,4 +509,26 @@ module SevenSegmentDecoder (
         endcase
     end
 
+endmodule
+
+module CyclicCounter #(
+	parameter int cycle = 4 // Cycle size
+) (
+	input logic clock,
+	input logic reset_n,
+	output logic done;
+);
+	logic [$clog2(cycle)-1:0] count;
+	always_ff @(posedge clock or negedge reset_n) begin
+		if (reset_n == 1'b0) begin
+			count <= '0;
+			done <= 1;
+		end else if (count == cycle - 1) begin
+			count <= '0;
+			done <= 1'b0;
+		end else begin
+			count <= count + 1;
+			done <= 1'b1;
+		end
+	end	
 endmodule
