@@ -1,5 +1,5 @@
 module ClockDivider#( // Converts from high to low freq
-    parameter int DIVISOR = 2 // 
+    parameter int DIVISOR = 2; // 
 ) (
     input logic clk_in,
     input logic rst_n,
@@ -16,7 +16,7 @@ module ClockDivider#( // Converts from high to low freq
     always_ff @(posedge clk_in or negedge rst_n) begin
         if (!rst_n) begin
             count <= '0;
-            clk_out <= 1'b0;
+            clk_out = 1'b0;
         end else if (count == (DIVISOR - 1)) begin
             count <= '0;
             clk_out <= 1'b1;

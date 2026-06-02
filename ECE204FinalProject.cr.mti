@@ -17,12 +17,4 @@ Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb 
 Top level modules:
 	SmartTrafficLightController_tb
 
-} {} {}} C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv {1 {vlog -work work -sv -stats=none C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv
-Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
--- Compiling module SmartTrafficLightController
--- Compiling module SevenSegmentDecoder
-
-Top level modules:
-	SmartTrafficLightController
-
 } {} {}}

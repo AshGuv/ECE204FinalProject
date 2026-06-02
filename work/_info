@@ -9,30 +9,55 @@ z2
 !i10f 100
 cModel Technology
 dC:/intelFPGA_pro/21.1
-vSevenSegmentDecoder
+vClockDivider
 Z0 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
-Z1 !s110 1780352496
+Z1 !s110 1780358753
+!i10b 1
+!s100 1NI4^H<LQV4WVa6YzH]k52
+Im^eGjRV=^3KhD4EC9_MkJ2
+S1
+Z2 dC:/ECE204/ECE204FinalProject
+w1780358205
+8C:/ECE204/ECE204FinalProject/ClockDivider.sv
+FC:/ECE204/ECE204FinalProject/ClockDivider.sv
+!i122 13
+L0 1 28
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+Z4 OV;L;2021.1;73
+r1
+!s85 0
+31
+Z5 !s108 1780358753.000000
+!s107 C:/ECE204/ECE204FinalProject/ClockDivider.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/ECE204/ECE204FinalProject/ClockDivider.sv|
+!i113 1
+Z6 o-work work -sv
+Z7 tCvgOpt 0
+n@clock@divider
+vSevenSegmentDecoder
+R0
+R1
 !i10b 1
 !s100 0J[]2^L]_hjdTNh4>j[9V1
 I^SjIlZADfbIWiL?O<Uze42
 S1
-Z2 dC:/ECE204/ECE204FinalProject
-Z3 w1780352294
-Z4 8C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv
-Z5 FC:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv
-!i122 1
+R2
+Z8 w1780355819
+Z9 8C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv
+Z10 FC:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv
+!i122 11
 L0 485 22
-Z6 VDg1SIo80bB@j0V0VzS_@n1
-Z7 OV;L;2021.1;73
+R3
+R4
 r1
 !s85 0
 31
-Z8 !s108 1780352496.000000
-Z9 !s107 C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv|
-Z10 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv|
+R5
+Z11 !s107 C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv|
+Z12 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv|
 !i113 1
-Z11 o-work work -sv
-Z12 tCvgOpt 0
+R6
+R7
 n@seven@segment@decoder
 vSmartTrafficLightController
 R0
@@ -42,22 +67,22 @@ R1
 I4IngeLRfo@:laSL<Z4cel0
 S1
 R2
-R3
-R4
-R5
-!i122 1
-L0 30 449
-R6
-R7
-r1
-!s85 0
-31
 R8
 R9
 R10
-!i113 1
+!i122 11
+L0 30 449
+R3
+R4
+r1
+!s85 0
+31
+R5
 R11
 R12
+!i113 1
+R6
+R7
 n@smart@traffic@light@controller
 vSmartTrafficLightController_tb
 R0
@@ -70,19 +95,19 @@ R2
 w1780351275
 8C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv
 FC:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv
-!i122 2
+!i122 12
 L0 22 430
-R6
-R7
+R3
+R4
 r1
 !s85 0
 31
-R8
+R5
 !s107 C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv|
 !i113 1
-R11
-R12
+R6
+R7
 n@smart@traffic@light@controller_tb
 vTrafficController
 R0
@@ -95,17 +120,17 @@ R2
 w1780028021
 8C:/ECE204/ECE204FinalProject/ExampleFSM.sv
 FC:/ECE204/ECE204FinalProject/ExampleFSM.sv
-!i122 0
+!i122 10
 L0 1 90
-R6
-R7
+R3
+R4
 r1
 !s85 0
 31
-R8
+R5
 !s107 C:/ECE204/ECE204FinalProject/ExampleFSM.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/ECE204/ECE204FinalProject/ExampleFSM.sv|
 !i113 1
-R11
-R12
+R6
+R7
 n@traffic@controller
