@@ -17,9 +17,9 @@ module ClockDivider#( // Converts from high to low freq
         if (!rst_n) begin
             count <= '0;
             clk_out <= 1'b0;
-        end else if (count == (DIVISOR - 1)) begin
+        end else if (count == (DIVISOR / 2 - 1)) begin
             count <= '0;
-            clk_out <= 1'b1;
+            clk_out <= ~clk_out;
         end else begin
             count <= count + 1'b1;
             clk_out <= 1'b0;

@@ -11,23 +11,23 @@ cModel Technology
 dC:/intelFPGA_pro/21.1
 vClockDivider
 Z0 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
-Z1 !s110 1780358753
+Z1 !s110 1780359242
 !i10b 1
-!s100 1NI4^H<LQV4WVa6YzH]k52
-Im^eGjRV=^3KhD4EC9_MkJ2
+!s100 ]06dPY59Z=U6:W`m;2n`N2
+IACl[8CG@EC=DD]A8l`6Im3
 S1
 Z2 dC:/ECE204/ECE204FinalProject
-w1780358205
+w1780359237
 8C:/ECE204/ECE204FinalProject/ClockDivider.sv
 FC:/ECE204/ECE204FinalProject/ClockDivider.sv
-!i122 13
+!i122 25
 L0 1 28
 Z3 VDg1SIo80bB@j0V0VzS_@n1
 Z4 OV;L;2021.1;73
 r1
 !s85 0
 31
-Z5 !s108 1780358753.000000
+Z5 !s108 1780359242.000000
 !s107 C:/ECE204/ECE204FinalProject/ClockDivider.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/ECE204/ECE204FinalProject/ClockDivider.sv|
 !i113 1
@@ -42,10 +42,10 @@ R1
 I^SjIlZADfbIWiL?O<Uze42
 S1
 R2
-Z8 w1780355819
+Z8 w1780358844
 Z9 8C:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv
 Z10 FC:/ECE204/ECE204FinalProject/SmartTrafficLightController_2.sv
-!i122 11
+!i122 23
 L0 485 22
 R3
 R4
@@ -70,7 +70,7 @@ R2
 R8
 R9
 R10
-!i122 11
+!i122 23
 L0 30 449
 R3
 R4
@@ -95,7 +95,7 @@ R2
 w1780351275
 8C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv
 FC:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv
-!i122 12
+!i122 24
 L0 22 430
 R3
 R4
@@ -120,7 +120,7 @@ R2
 w1780028021
 8C:/ECE204/ECE204FinalProject/ExampleFSM.sv
 FC:/ECE204/ECE204FinalProject/ExampleFSM.sv
-!i122 10
+!i122 22
 L0 1 90
 R3
 R4
