@@ -199,7 +199,7 @@ module SmartTrafficLightController (
     always_comb begin
         case (next_state)
             S0_MAIN_GREEN_IDLE:    next_countdown = MAIN_GREEN_TIME;
-            S1_MAIN_GREEN_TIMED:   next_countdown = MAIN_GREEN_TIME;
+            S1_MAIN_GREEN_TIMED:   next_countdown = MAIN_GREEN_TIME - 1;
 
             S2_MAIN_YELLOW:        next_countdown = YELLOW_TIME;
             S3_ALL_RED_AFTER_MAIN: next_countdown = ALL_RED_TIME;
