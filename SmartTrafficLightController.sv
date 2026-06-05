@@ -151,7 +151,8 @@ module SmartTrafficLightController (
     // Pedestrian pending logic
     // ========================================================
 
-    always_ff @(posedge clk_local or negedge reset_n) begin
+    // On global 50MHz clock; better user experience
+    always_ff @(posedge clk or negedge reset_n) begin
         if (!reset_n) begin
             ped_pending <= 1'b0;
         end else begin
@@ -173,7 +174,8 @@ module SmartTrafficLightController (
     // Side-road pending logic
     // ========================================================
 
-    always_ff @(posedge clk_local or negedge reset_n) begin
+    // On global 50MHz clock; better user experience
+    always_ff @(posedge clk or negedge reset_n) begin
         if (!reset_n) begin
             side_pending <= 1'b0;
         end else begin
