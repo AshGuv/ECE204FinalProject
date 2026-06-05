@@ -46,17 +46,21 @@ module SmartTrafficLightController (
 
     output logic ped_walk,
     output logic ped_wait,
-
-    output logic [3:0] countdown,
+	 
+    //output logic [3:0] countdown, 
     output logic [6:0] seg7_tens,
     output logic [6:0] seg7_ones
 );
-
+	
+	 // Internal signals
+	 
+	 logic [3:0] countdown;
+	 
     // ========================================================
     // Timing values
     // ========================================================
     
-    localparam CLK_FREQ = 50*10**6;
+    localparam int CLK_FREQ = 50*10**6;
 
     localparam logic [3:0] MAIN_GREEN_TIME = 4'd10;
     localparam logic [3:0] YELLOW_TIME     = 4'd3;
@@ -114,7 +118,7 @@ module SmartTrafficLightController (
     // Base FSM state register
     // ========================================================
 
-    always_ff @(posedge clk or negedge reset_n or posedge emergency_main or 
+    always_ff @(posedge clk_local or negedge reset_n or posedge emergency_main or 
             posedge emergency_side) begin
         if (!reset_n) begin
             cur_state <= S0_MAIN_GREEN_IDLE;
@@ -131,7 +135,7 @@ module SmartTrafficLightController (
     // Countdown timer logic
     // ========================================================
 
-    always_ff @(posedge clk or negedge reset_n) begin
+    always_ff @(posedge clk_local or negedge reset_n) begin
         if (!reset_n) begin
             countdown <= MAIN_GREEN_TIME;
         end else if (next_state != cur_state) begin
@@ -147,7 +151,7 @@ module SmartTrafficLightController (
     // Pedestrian pending logic
     // ========================================================
 
-    always_ff @(posedge clk or negedge reset_n) begin
+    always_ff @(posedge clk_local or negedge reset_n) begin
         if (!reset_n) begin
             ped_pending <= 1'b0;
         end else begin
@@ -169,7 +173,7 @@ module SmartTrafficLightController (
     // Side-road pending logic
     // ========================================================
 
-    always_ff @(posedge clk or negedge reset_n) begin
+    always_ff @(posedge clk_local or negedge reset_n) begin
         if (!reset_n) begin
             side_pending <= 1'b0;
         end else begin
@@ -520,15 +524,15 @@ module CyclicCounter #(
 );
 	logic [$clog2(CYCLE)-1:0] count;
 	always_ff @(posedge clock or negedge reset_n) begin
-		if (reset_n == 1'b0) begin
-			count <= '0;
-			done <= 1;
-		end else if (count == CYCLE - 1) begin
+		if (!reset_n) begin
 			count <= '0;
 			done <= 1'b0;
+		end else if (count == CYCLE - 1) begin
+			count <= '0;
+			done <= 1'b1;
 		end else begin
 			count <= count + 1;
-			done <= 1'b1;
+			done <= 1'b0;
 		end
 	end	
 endmodule

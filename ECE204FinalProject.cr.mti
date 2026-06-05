@@ -1,21 +1,14 @@
-C:/ECE204/ECE204FinalProject/ExampleFSM.sv {1 {vlog -work work -sv -stats=none C:/ECE204/ECE204FinalProject/ExampleFSM.sv
+C:/ECE204/ECE204FinalProject/SmartTrafficLightController.sv {0 {vlog -work work -sv -stats=none C:/ECE204/ECE204FinalProject/SmartTrafficLightController.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling module SmartTrafficLightController
+** Error (suppressible): (vlog-13302) C:/ECE204/ECE204FinalProject/SmartTrafficLightController.sv(75): Empty case statement. SystemVerilog syntax requires at least one branch.
+
+} {} {}} C:/ECE204/ECE204FinalProject/ExampleFSM.sv {1 {vlog -work work -sv -stats=none C:/ECE204/ECE204FinalProject/ExampleFSM.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
 -- Compiling module TrafficController
 
 Top level modules:
 	TrafficController
-
-} {} {}} C:/ECE204/ECE204FinalProject/SmartTrafficLightController.sv {0 {vlog -work work -sv -stats=none C:/ECE204/ECE204FinalProject/SmartTrafficLightController.sv
-Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
--- Compiling module SmartTrafficLightController
-** Error (suppressible): (vlog-13302) C:/ECE204/ECE204FinalProject/SmartTrafficLightController.sv(75): Empty case statement. SystemVerilog syntax requires at least one branch.
-
-} {} {}} C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv {1 {vlog -work work -sv -stats=none C:/ECE204/ECE204FinalProject/SmartTrafficLightController_tb.sv
-Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
--- Compiling module SmartTrafficLightController_tb
-
-Top level modules:
-	SmartTrafficLightController_tb
 
 } {} {}} C:/ECE204/ECE204FinalProject/ClockDivider.sv {1 {vlog -work work -sv -stats=none C:/ECE204/ECE204FinalProject/ClockDivider.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
