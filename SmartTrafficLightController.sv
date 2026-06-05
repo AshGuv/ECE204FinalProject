@@ -66,7 +66,7 @@ module SmartTrafficLightController (
 
     // Clock frequency conversion
     logic clk_local;
-    CyclicCounter cc0(CLK_FREQ, reset_n, clk_local);
+    CyclicCounter #(.CYCLE(CLK_FREQ)) cc0(clk, reset_n, clk_local);
 
     // ========================================================
     // State definitions
@@ -512,18 +512,18 @@ module SevenSegmentDecoder (
 endmodule
 
 module CyclicCounter #(
-	parameter int cycle = 4 // Cycle size
+	parameter int CYCLE = 4 // Cycle size
 ) (
 	input logic clock,
 	input logic reset_n,
 	output logic done
 );
-	logic [$clog2(cycle)-1:0] count;
+	logic [$clog2(CYCLE)-1:0] count;
 	always_ff @(posedge clock or negedge reset_n) begin
 		if (reset_n == 1'b0) begin
 			count <= '0;
 			done <= 1;
-		end else if (count == cycle - 1) begin
+		end else if (count == CYCLE - 1) begin
 			count <= '0;
 			done <= 1'b0;
 		end else begin
