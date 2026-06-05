@@ -24,7 +24,13 @@
         - ped_button_n is active LOW.
         - emergency_main is active HIGH.
         - emergency_side is active HIGH.
-        - 1 clock cycle = 1 second.
+		  - clk is the 50 MHz DE10-Lite clock.
+		  - one_sec_tick is generated from clk.
+		  - The FSM countdown updates once per one_sec_tick.
+		  
+	 SOURCES:
+		  - Example FSM from homework
+		  - Lab 5 Clock assignment
 */
 
 module SmartTrafficLightController (
@@ -60,7 +66,7 @@ module SmartTrafficLightController (
     // Timing values
     // ========================================================
     
-    localparam int CLK_FREQ = 50*10**6;
+    localparam int CLK_FREQ = 50_000_000;
 
     localparam logic [3:0] MAIN_GREEN_TIME = 4'd10;
     localparam logic [3:0] YELLOW_TIME     = 4'd3;
@@ -68,9 +74,16 @@ module SmartTrafficLightController (
     localparam logic [3:0] ALL_RED_TIME    = 4'd2;
     localparam logic [3:0] PED_TIME        = 4'd6;
 
-    // Clock frequency conversion
-    logic clk_local;
-    CyclicCounter #(.CYCLE(CLK_FREQ)) cc0(clk, reset_n, clk_local);
+   // Clock frequency conversion
+	// one_sec_tick is a one-clock-cycle pulse that happens once per second.
+	// It is not a real clock. It should be used as an enable signal.
+logic one_sec_tick;
+
+CyclicCounter #(.CYCLE(CLK_FREQ)) cc0 (
+    .clock(clk),
+    .reset_n(reset_n),
+    .done(one_sec_tick)
+);
 
     // ========================================================
     // State definitions
@@ -118,105 +131,159 @@ module SmartTrafficLightController (
     // Base FSM state register
     // ========================================================
 
-    always_ff @(posedge clk_local or negedge reset_n or posedge emergency_main or 
-            posedge emergency_side) begin
-        if (!reset_n) begin
-            cur_state <= S0_MAIN_GREEN_IDLE;
-        end else if (emergency_main) begin
-            cur_state <= S9_EMERGENCY_MAIN;
-        end else if (emergency_side) begin
-            cur_state <= S10_EMERGENCY_SIDE;
-        end else begin
-            cur_state <= next_state;
-        end
+    always_ff @(posedge clk or negedge reset_n) begin
+    if (!reset_n) begin
+        cur_state <= S0_MAIN_GREEN_IDLE;
     end
+
+    // Emergency main has highest priority.
+    else if (emergency_main) begin
+        cur_state <= S9_EMERGENCY_MAIN;
+    end
+
+    // Emergency side has second priority.
+    else if (emergency_side) begin
+        cur_state <= S10_EMERGENCY_SIDE;
+    end
+
+    // If emergency is no longer active, leave emergency state.
+    else if (cur_state == S9_EMERGENCY_MAIN || cur_state == S10_EMERGENCY_SIDE) begin
+        cur_state <= S0_MAIN_GREEN_IDLE;
+    end
+
+    // Normal FSM updates once per second.
+    else if (one_sec_tick) begin
+        cur_state <= next_state;
+    end
+end
 
     // ========================================================
     // Countdown timer logic
     // ========================================================
 
-    always_ff @(posedge clk_local or negedge reset_n) begin
-        if (!reset_n) begin
-            countdown <= MAIN_GREEN_TIME;
-        end else if (next_state != cur_state) begin
+    always_ff @(posedge clk or negedge reset_n) begin
+
+    // Active-low reset.
+    // When reset_n = 0, restart the countdown at main green time.
+    if (!reset_n) begin
+        countdown <= MAIN_GREEN_TIME;
+    end 
+
+    // Only update the countdown once per second.
+    // If one_sec_tick is 0, countdown holds its current value.
+    else if (one_sec_tick) begin
+
+        // If the FSM is moving into a new state, load that state's
+        // starting countdown value.
+        if (next_state != cur_state) begin
             countdown <= next_countdown;
-        end else if (cur_state == S0_MAIN_GREEN_IDLE) begin
+        end 
+
+        // In main green idle, no request is being served yet.
+        // Keep the countdown at 10 instead of counting down.
+        else if (cur_state == S0_MAIN_GREEN_IDLE) begin
             countdown <= MAIN_GREEN_TIME;
-        end else if (countdown > 4'd0) begin
+        end 
+
+        // For all other timed states, count down once per second.
+        // The check prevents countdown from going below 0.
+        else if (countdown > 4'd0) begin
             countdown <= countdown - 4'd1;
         end
     end
+end
 
     // ========================================================
     // Pedestrian pending logic
     // ========================================================
 
-    // On global 50MHz clock; better user experience
     always_ff @(posedge clk or negedge reset_n) begin
-        if (!reset_n) begin
+    if (!reset_n) begin
+        ped_pending <= 1'b0;
+    end 
+    else begin
+        // Store the pedestrian request whenever the button is pressed.
+        // This uses the 50 MHz clock so a short button press is less likely to be missed.
+        if (!ped_button_n) begin
+            ped_pending <= 1'b1;
+        end
+
+        // Clear the pedestrian request only when the one-second FSM update happens
+        // and the pedestrian state has finished.
+        if (one_sec_tick &&
+            (cur_state == S7_PED_THEN_SIDE || cur_state == S8_PED_THEN_MAIN) &&
+            countdown == 4'd0) begin
             ped_pending <= 1'b0;
-        end else begin
-
-            // Store the pedestrian request whenever the button is pressed.
-            if (!ped_button_n) begin
-                ped_pending <= 1'b1;
-            end
-
-            // Clear the pedestrian request after either pedestrian state finishes.
-            if ((cur_state == S7_PED_THEN_SIDE || cur_state == S8_PED_THEN_MAIN)
-                && countdown == 4'd0) begin
-                ped_pending <= 1'b0;
-            end
         end
     end
+end
 
     // ========================================================
     // Side-road pending logic
     // ========================================================
 
-    // On global 50MHz clock; better user experience
     always_ff @(posedge clk or negedge reset_n) begin
-        if (!reset_n) begin
+    if (!reset_n) begin
+        side_pending <= 1'b0;
+    end 
+    else begin
+        // Store the side-road request whenever side_sensor is active.
+        // This uses the 50 MHz clock so a short sensor signal is less likely to be missed.
+        if (side_sensor) begin
+            side_pending <= 1'b1;
+        end
+
+        // Clear the side-road request when the side green state is reached.
+        if (one_sec_tick && cur_state == S4_SIDE_GREEN) begin
             side_pending <= 1'b0;
-        end else begin
-
-            // Store the side-road request whenever side_sensor is active.
-            if (side_sensor) begin
-                side_pending <= 1'b1;
-            end
-
-            // Clear the side-road request once the side road actually gets green.
-            if (cur_state == S4_SIDE_GREEN) begin
-                side_pending <= 1'b0;
-            end
         end
     end
+end
 
-    // ========================================================
-    // Next countdown value logic
-    // ========================================================
+// ========================================================
+// Next countdown value logic
+// ========================================================
+// This block decides what value the countdown should load
+// when the FSM moves into a new state.
+//
+// It looks at next_state because we want the timer for the
+// state we are about to enter, not the state we are leaving.
 
-    always_comb begin
-        case (next_state)
-            S0_MAIN_GREEN_IDLE:    next_countdown = MAIN_GREEN_TIME;
-            S1_MAIN_GREEN_TIMED:   next_countdown = MAIN_GREEN_TIME - 1;
+always_comb begin
+    case (next_state)
 
-            S2_MAIN_YELLOW:        next_countdown = YELLOW_TIME;
-            S3_ALL_RED_AFTER_MAIN: next_countdown = ALL_RED_TIME;
+        // Main green idle and timed both display/start at 10 seconds.
+        S0_MAIN_GREEN_IDLE:    next_countdown = MAIN_GREEN_TIME;
+        S1_MAIN_GREEN_TIMED:   next_countdown = MAIN_GREEN_TIME;
 
-            S4_SIDE_GREEN:         next_countdown = SIDE_GREEN_TIME;
-            S5_SIDE_YELLOW:        next_countdown = YELLOW_TIME;
-            S6_ALL_RED_AFTER_SIDE: next_countdown = ALL_RED_TIME;
+        // Main road yellow lasts 3 seconds.
+        S2_MAIN_YELLOW:        next_countdown = YELLOW_TIME;
 
-            S7_PED_THEN_SIDE:      next_countdown = PED_TIME;
-            S8_PED_THEN_MAIN:      next_countdown = PED_TIME;
+        // All-red after main lasts 2 seconds.
+        S3_ALL_RED_AFTER_MAIN: next_countdown = ALL_RED_TIME;
 
-            S9_EMERGENCY_MAIN:     next_countdown = 4'd0;
-            S10_EMERGENCY_SIDE:    next_countdown = 4'd0;
+        // Side green lasts 7 seconds.
+        S4_SIDE_GREEN:         next_countdown = SIDE_GREEN_TIME;
 
-            default:               next_countdown = MAIN_GREEN_TIME;
-        endcase
-    end
+        // Side yellow lasts 3 seconds.
+        S5_SIDE_YELLOW:        next_countdown = YELLOW_TIME;
+
+        // All-red after side lasts 2 seconds.
+        S6_ALL_RED_AFTER_SIDE: next_countdown = ALL_RED_TIME;
+
+        // Pedestrian walk states last 6 seconds.
+        S7_PED_THEN_SIDE:      next_countdown = PED_TIME;
+        S8_PED_THEN_MAIN:      next_countdown = PED_TIME;
+
+        // Emergency states do not use a countdown.
+        // They stay active while the emergency input is active.
+        S9_EMERGENCY_MAIN:     next_countdown = 4'd0;
+        S10_EMERGENCY_SIDE:    next_countdown = 4'd0;
+
+        // Safe default: load main green time.
+        default:               next_countdown = MAIN_GREEN_TIME;
+    endcase
+end
 
     // ========================================================
     // Next-state logic
@@ -517,24 +584,58 @@ module SevenSegmentDecoder (
 
 endmodule
 
+// ============================================================
+// CyclicCounter
+// ============================================================
+// This module creates a one-clock-cycle pulse after a set number
+// of input clock cycles.
+//
+// For this project, it can be used to convert the 50 MHz DE10-Lite
+// clock into a 1-second tick.
+//
+// Important:
+//      done is NOT a new clock.
+//      done is an enable pulse that should be used inside other
+//      always_ff blocks.
+
 module CyclicCounter #(
-	parameter int CYCLE = 4 // Cycle size
+    parameter int CYCLE = 4 // Number of clock cycles to count before pulsing done
 ) (
-	input logic clock,
-	input logic reset_n,
-	output logic done
+    input  logic clock,   // Input clock, usually the 50 MHz board clock
+    input  logic reset_n, // Active-low reset
+    output logic done     // Goes high for one clock cycle when count reaches CYCLE - 1
 );
-	logic [$clog2(CYCLE)-1:0] count;
-	always_ff @(posedge clock or negedge reset_n) begin
-		if (!reset_n) begin
-			count <= '0;
-			done <= 1'b0;
-		end else if (count == CYCLE - 1) begin
-			count <= '0;
-			done <= 1'b1;
-		end else begin
-			count <= count + 1;
-			done <= 1'b0;
-		end
-	end	
+
+    // The counter needs enough bits to count from 0 to CYCLE - 1.
+    // $clog2(CYCLE) automatically calculates the number of bits needed.
+    //
+    // Example:
+    //      CYCLE = 50_000_000
+    //      $clog2(CYCLE) = 26
+    //      so count is 26 bits wide.
+    logic [$clog2(CYCLE)-1:0] count;
+
+    // Counter logic
+    always_ff @(posedge clock or negedge reset_n) begin
+
+        // If reset is pressed, clear the count and turn off done.
+        if (!reset_n) begin
+            count <= '0;
+            done  <= 1'b0;
+        end
+
+        // When count reaches CYCLE - 1, one full cycle has passed.
+        // Reset count back to 0 and pulse done high for one clock cycle.
+        else if (count == CYCLE - 1) begin
+            count <= '0;
+            done  <= 1'b1;
+        end
+
+        // Otherwise, keep counting and keep done low.
+        else begin
+            count <= count + 1'b1;
+            done  <= 1'b0;
+        end
+    end
+
 endmodule
