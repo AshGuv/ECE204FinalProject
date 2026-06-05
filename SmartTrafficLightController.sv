@@ -56,7 +56,7 @@ module SmartTrafficLightController (
     // Timing values
     // ========================================================
     
-    localparam CLK_FREQ = 50*10**6
+    localparam CLK_FREQ = 50*10**6;
 
     localparam logic [3:0] MAIN_GREEN_TIME = 4'd10;
     localparam logic [3:0] YELLOW_TIME     = 4'd3;
@@ -516,7 +516,7 @@ module CyclicCounter #(
 ) (
 	input logic clock,
 	input logic reset_n,
-	output logic done;
+	output logic done
 );
 	logic [$clog2(cycle)-1:0] count;
 	always_ff @(posedge clock or negedge reset_n) begin
