@@ -1,0 +1,41 @@
+##########
+# INPUTS #
+##########
+set_location_assignment PIN_P11 -to clk
+set_location_assignment PIN_B8 -to reset_n
+set_location_assignment PIN_F15 -to side_sensor
+set_location_assignment PIN_A7 -to ped_button_n
+set_location_assignment PIN_B14 -to emergency_main
+set_location_assignment PIN_A14 -to emergency_side
+
+###########
+# OUTPUTS #
+###########
+set_location_assignment PIN_D14 -to main_red
+set_location_assignment PIN_A11 -to main_yellow
+set_location_assignment PIN_B11 -to main_green
+
+set_location_assignment PIN_D13 -to side_red
+set_location_assignment PIN_C13 -to side_yellow
+set_location_assignment PIN_E14 -to side_green
+
+set_location_assignment PIN_A10 -to ped_walk
+set_location_assignment PIN_B10 -to ped_wait
+
+# Seven Segment 1
+set_location_assignment PIN_B17 -to seg7_tens[6]
+set_location_assignment PIN_A18 -to seg7_tens[5]
+set_location_assignment PIN_A17 -to seg7_tens[4]
+set_location_assignment PIN_B16 -to seg7_tens[3]
+set_location_assignment PIN_E18 -to seg7_tens[2]
+set_location_assignment PIN_D18 -to seg7_tens[1]
+set_location_assignment PIN_C18 -to seg7_tens[0]
+
+# Seven Segment 0
+set_location_assignment PIN_C17 -to seg7_ones[6]
+set_location_assignment PIN_D17 -to seg7_ones[5]
+set_location_assignment PIN_E16 -to seg7_ones[4]
+set_location_assignment PIN_C16 -to seg7_ones[3]
+set_location_assignment PIN_C15 -to seg7_ones[2]
+set_location_assignment PIN_E15 -to seg7_ones[1]
+set_location_assignment PIN_C14 -to seg7_ones[0]
