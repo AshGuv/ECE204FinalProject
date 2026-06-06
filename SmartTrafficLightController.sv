@@ -127,9 +127,22 @@ CyclicCounter #(.CYCLE(CLK_FREQ)) cc0 (
     logic [3:0] tens_digit;
     logic [3:0] ones_digit;
 
-    // ========================================================
-    // Base FSM state register
-    // ========================================================
+// ========================================================
+// Base FSM state register
+// ========================================================
+// This block stores the current FSM state.
+//
+// The FPGA clock is 50 MHz, but the normal traffic-light FSM
+// should only advance once per second. Because of that, normal
+// state updates only happen when one_sec_tick is high.
+//
+// Emergency inputs are checked before one_sec_tick so the system
+// can move into an emergency state quickly instead of waiting for
+// the next one-second tick.
+//
+// When an emergency signal turns off, the FSM returns to
+// S0_MAIN_GREEN_IDLE.
+	 
 
     always_ff @(posedge clk or negedge reset_n) begin
     if (!reset_n) begin
@@ -193,7 +206,23 @@ end
     end
 end
 
-    // ========================================================
+// ========================================================
+// Request memory flags
+// ========================================================
+// These flags remember short input requests.
+//
+// The side_sensor and ped_button_n inputs may only be active for
+// a short time. Since the FSM only advances once per second, a
+// quick input could be missed without these flags.
+//
+// ped_pending stores a pedestrian request until the pedestrian
+// walk state is completed.
+//
+// side_pending stores a side-road request until the side road
+// receives green.
+	
+
+	 // ========================================================
     // Pedestrian pending logic
     // ========================================================
 
@@ -203,7 +232,6 @@ end
     end 
     else begin
         // Store the pedestrian request whenever the button is pressed.
-        // This uses the 50 MHz clock so a short button press is less likely to be missed.
         if (!ped_button_n) begin
             ped_pending <= 1'b1;
         end
@@ -228,7 +256,6 @@ end
     end 
     else begin
         // Store the side-road request whenever side_sensor is active.
-        // This uses the 50 MHz clock so a short sensor signal is less likely to be missed.
         if (side_sensor) begin
             side_pending <= 1'b1;
         end
@@ -417,9 +444,16 @@ end
     // ========================================================
     // Emergency outputs are checked first so they override the
     // normal state outputs immediately.
-    //
     // This prevents a case where emergency_side turns on while the
     // current FSM state is still main green for one clock cycle.
+	 //
+	 // Emergency outputs are checked directly from the inputs.
+	 // This means the lights respond immediately when emergency_main
+	 // or emergency_side becomes active, instead of waiting for the
+	 // next one_sec_tick.
+	 //
+	 // emergency_main is checked first, so if both emergency inputs
+	 // are active at the same time, the main road wins.
 
     always_comb begin
         // Safe default values.
