@@ -33,8 +33,9 @@
 		  - Lab 5 Clock assignment
 */
 
-module SmartTrafficLightController (
-    input logic clk, // 50MHz
+module SmartTrafficLightController #(
+    parameter int CLK_FREQ = 50_000_000
+) (
     input logic reset_n,
 
     input logic side_sensor,
@@ -65,8 +66,6 @@ module SmartTrafficLightController (
     // ========================================================
     // Timing values
     // ========================================================
-    
-    localparam int CLK_FREQ = 50_000_000;
 
     localparam logic [3:0] MAIN_GREEN_TIME = 4'd10;
     localparam logic [3:0] YELLOW_TIME     = 4'd3;
