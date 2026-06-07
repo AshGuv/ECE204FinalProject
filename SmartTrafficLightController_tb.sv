@@ -68,7 +68,7 @@ module SmartTrafficLightController_tb;
         .ped_walk(ped_walk),
         .ped_wait(ped_wait),
 
-        .countdown(countdown),
+        //.countdown(countdown),
         .seg7_tens(seg7_tens),
         .seg7_ones(seg7_ones)
     );
