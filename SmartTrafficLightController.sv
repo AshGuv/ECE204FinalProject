@@ -37,6 +37,7 @@ module SmartTrafficLightController #(
     parameter int CLK_FREQ = 50_000_000
 ) (
     input logic reset_n,
+	 input logic clk,       // 50 MHz DE10-Lite clock
 
     input logic side_sensor,
     input logic ped_button_n,
